@@ -2,6 +2,7 @@ package src;
 
 public class Particle {
 	
+    private int id;
     private double x;
     private double y;
     private double radius;
@@ -12,7 +13,8 @@ public class Particle {
     private Event newE;
     private int counter;
 
-    public Particle(double x, double y, double vx, double vy, double mass, double radius) {
+    public Particle(int id, double x, double y, double vx, double vy, double mass, double radius) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -101,6 +103,10 @@ public class Particle {
 
     }
     
+    public int getId() {
+        return id;
+    }
+
     public double getVelocityX() {
         return vx;
     }
