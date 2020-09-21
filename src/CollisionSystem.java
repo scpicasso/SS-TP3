@@ -10,43 +10,29 @@ public class CollisionSystem {
 	double gapSize;
 
 
-	public CollisionSystem(List<Particle> particles, double length, double height) {
+	public CollisionSystem(List<Particle> particles, double length, double height, double gap) {
 		this.particles = particles;
 		this.events = new ArrayList<Event>();
 		this.current_time = 0;
 		this.height = height;
 		this.length = length;
-		this.gapSize = 0.01;
+		this.gapSize = gap;
 	}
 
 	public double getTime() {
 		return current_time;
 	}
 
-	public void findNextEventForParticle(Particle p) {
-		double tx = p.xCollision(length, gapSize);
-		double ty = p.yCollision(height);
-		double tp = 10000000;
-		Particle collided = null;
+	public void findEventsForParticle(Particle p) {
+		events.add(new Event(null, p, p.xCollision(length, gapSize) + current_time));
+		events.add(new Event(p, null, p.yCollision(height) + current_time));
 		for(Particle j : particles) {
-			if(tp > p.particleCollision(j)) {
-				tp = p.particleCollision(j);
-				collided = j;
-			}
-		}
-		if(tx < ty && tx < tp && tx != -1) {
-			events.add(new Event(null, p, tx));
-		}
-		else if(ty < tx && ty < tp && ty != -1) {
-			events.add(new Event(p, null, ty));
-		}
-		else {
-			events.add(new Event(p, collide, tp));
+			events.add(new Event(p, j, p.particleCollision(j) + current_time));
 		}
 		return;
 	}
 
-	public void findNextEventForAllParticles() {
+	public void findEventsForAllParticles() {
 		for(Particle p : particles) {
 			findNextEventForParticle(p);
 		}
@@ -66,6 +52,7 @@ public class CollisionSystem {
 
 		putEventInAction(e);
 		events.remove(0);
+		Collections.sort(events);
 		return;
 	}
 
@@ -76,8 +63,8 @@ public class CollisionSystem {
 		if(a == null && b == null) {
 			return;
 		}
-		moveParticles(new_time);
-		current_time += new_time;
+		moveParticles(new_time - current_time);
+		current_time = new_time;
 		if(a == null && b != null) {
 			particles[b.getId()].bounceBackX();
 			particles[b.getId()].addCollision();
@@ -95,7 +82,6 @@ public class CollisionSystem {
 			findNextEventForParticle(a);
 			findNextEventForParticle(b);
 		}
-
 		return;
 	}
 

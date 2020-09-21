@@ -38,8 +38,17 @@ public class Event implements Comparable<Event>{
     			return true;
     		}
     	}
-    	else
-    		return false;
+        else if(i != null && j== null) {
+            if(i.getCounter() != currentI) {
+                return true;
+            }
+        } 
+        else if(i == null && j != null) {
+            if(j.getCounter() != currentJ) {
+                return true;
+            }
+        }
+    	return false;
     }
 
     @Override

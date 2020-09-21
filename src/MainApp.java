@@ -21,16 +21,9 @@ public class MainApp {
 	private static double auxValues[];
 	private static int valuesIdx = 0;
 	
-	//input formato: cantidad de particulas, particula n + posicion + direccion
-	//outputs formato: cantidad de particulas + posicion, nombre del archivo
-	//output_t=n.xyz 
 	public static void main(String[] args) throws IOException {
 		List<Particle> particles = null;
 		FileParser fp = new FileParser();
-		auxValues = new double[500];
-		
-		short[][] nodes;
-		short[][] auxNodes = new short [size][];
 		
 		try {
 	    	particles = fp.getParticles(input_file);            
@@ -38,7 +31,7 @@ public class MainApp {
 			System.out.println("File not found.");
 		}
 				
-		CollisionSystem cs = new CollisionSystem(particles, fp.getLength(), fp.getHeight());
+		CollisionSystem cs = new CollisionSystem(particles, 0.24, 0.09, fp.getGap());
 		
 		for (int i = 0; i < 2000; i++) {
 			cs.findNextEventForAllParticles();
