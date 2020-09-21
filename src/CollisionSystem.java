@@ -1,17 +1,22 @@
-package src;
-
 import java.util.*;
 
-public class CollisionSystem{
+public class CollisionSystem {
 	
-	ArrayList<Particle> particles;
-	ArrayList<Event> events;
+	private double length;
+	private double height;
+	List<Particle> particles;
+	List<Event> events;
 	double current_time;
+	double gapSize;
 
-	public CollisionSystem(List<Particle> particles) {
+
+	public CollisionSystem(List<Particle> particles, double length, double height) {
 		this.particles = particles;
 		this.events = new ArrayList<Event>();
 		this.current_time = 0;
+		this.height = height;
+		this.length = length;
+		this.gapSize = 0.01;
 	}
 
 	public double getTime() {
@@ -19,8 +24,8 @@ public class CollisionSystem{
 	}
 
 	public void findNextEventForParticle(Particle p) {
-		double tx = p.xCollision();
-		double ty = p.yCollision();
+		double tx = p.xCollision(length, gapSize);
+		double ty = p.yCollision(height);
 		double tp = 10000000;
 		Particle collided = null;
 		for(Particle j : particles) {
@@ -29,10 +34,10 @@ public class CollisionSystem{
 				collided = j;
 			}
 		}
-		if(tx < ty && tx < tp && tx!=-1) {
+		if(tx < ty && tx < tp && tx != -1) {
 			events.add(new Event(null, p, tx));
 		}
-		else if(ty < tx && ty < tp && ty!=-1) {
+		else if(ty < tx && ty < tp && ty != -1) {
 			events.add(new Event(p, null, ty));
 		}
 		else {

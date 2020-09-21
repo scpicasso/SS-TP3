@@ -62,16 +62,16 @@ public class Particle {
     }
 
     public double particleCollision(Particle j) {
-        deltaX = j.getX() - x;
-        deltaY = j.getY() - y;
-        deltaVx = j.getVelocityX() - vx;
-        deltaVy = j.getVelocityY() - vy;
-        deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
-        dValue = Math.pow(deltaVR, 2) - 
+    	double deltaX = j.getX() - x;
+    	double deltaY = j.getY() - y;
+    	double deltaVx = j.getVelocityX() - vx;
+    	double deltaVy = j.getVelocityY() - vy;
+    	double deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
+    	double dValue = Math.pow(deltaVR, 2) - 
         ((Math.pow(deltaVx,2) + Math.pow(deltaVy,2))*
             (Math.pow(deltaX,2) + Math.pow(deltaY,2) - 
-                Math.pow(j.getRadius+radius, 2)));
-        if(deltaVR>=0 || dValue<0) {
+                Math.pow(j.getRadius() + radius, 2)));
+        if(deltaVR >= 0 || dValue < 0) {
             return -1;
         }
         else {

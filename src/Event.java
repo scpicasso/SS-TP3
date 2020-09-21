@@ -1,6 +1,9 @@
-public class Event implements Comparator<Event>{
-	
+import java.util.Comparator;
 
+public class Event implements Comparable<Event>{
+	private int i;
+	private int j;
+	
 	//if i is null then its a collision between a horizontal wall and particle j
 	//if j is null then its a collision between a vertical wall and particle i
 	public Event(Particle i, Particle j, double time) {
@@ -8,10 +11,10 @@ public class Event implements Comparator<Event>{
         this.j = j;
         this.currentJ = 0;
         this.currentI = 0;
-        if(i!= null) {
+        if(i != null) {
         	this.currentI = i.getCounter();
         }
-        if(j!= null) {
+        if(j != null) {
         	this.currentJ = j.getCounter();
         }
         this.time = time;  
@@ -43,4 +46,5 @@ public class Event implements Comparator<Event>{
     public int compareTo(Event o) {
     	return this.getTime() - o.getTime();
     }
+
 }
