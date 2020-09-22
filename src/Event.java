@@ -1,3 +1,5 @@
+package src;
+
 import java.util.Comparator;
 
 public class Event implements Comparable<Event>{
@@ -56,7 +58,15 @@ public class Event implements Comparable<Event>{
 
     @Override
     public int compareTo(Event o) {
-    	return (int) (this.getTime() - o.getTime());
+    	if(this.getTime() > o.getTime()) {
+            return 1;
+        }
+        if(this.getTime() < o.getTime()) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
     }
 
 }

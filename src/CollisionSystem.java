@@ -1,3 +1,5 @@
+package src;
+
 import java.util.*;
 
 public class CollisionSystem {
@@ -23,10 +25,20 @@ public class CollisionSystem {
 	}
 
 	public void findEventsForParticle(Particle p) {
-		events.add(new Event(null, p, p.xCollision(length, gapSize) + current_time));
-		events.add(new Event(p, null, p.yCollision(height) + current_time));
+		double tx = p.xCollision(length, height, gapSize);
+		double ty = p.yCollision(height);
+		if(tx >= 0) {
+			events.add(new Event(null, p, tx + current_time));
+		}
+		if(ty >= 0) {
+			events.add(new Event(p, null, ty + current_time));
+		}
+		double tc;
 		for(Particle j : particles) {
-			events.add(new Event(p, j, p.timeToCollision(j) + current_time));
+			tc = p.timeToCollision(j);
+			if(tc >= 0) {
+				events.add(new Event(p, j, tc + current_time));
+			}
 		}
 		return;
 	}

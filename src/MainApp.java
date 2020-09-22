@@ -1,3 +1,5 @@
+package src;
+
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,12 +12,9 @@ import java.util.List;
 public class MainApp {
 	
 	private static String input_file = "input.txt";
-	private static int size = 200;
 	private static int step, stepl;
-	private static boolean corte;
 	private static double auxValues[];
-	private static int valuesIdx = 0;
-	
+
 	public static void main(String[] args) throws IOException {
 		List<Particle> particles = null;
 		FileParser fp = new FileParser();
@@ -27,16 +26,21 @@ public class MainApp {
 		}
 				
 		CollisionSystem cs = new CollisionSystem(particles, 0.24, 0.09, fp.getGap());
+		int flag_counter = 0;
 		
 		cs.findEventsForAllParticles();
-		for (int i = 0; i < 500; i++) {
+		while (flag_counter < 50) {
+			writeParticlesToFile(particles, fp.getN(), cs.getTime());
 			cs.nextEvent();
+			double frac_part = calculateFractionParticle(particles, fp.getN());
+			if( frac_part < 0.6 && frac_part > 0.4 ) {
+				flag_counter ++;
+			}
+			else {
+				flag_counter = 0;
+			}
+
 		}
-		
-//		for (int i = 0; i < 2000; i++) {
-//			writeParticlesToFile(particles, nodes, fp.getN(), size);
-//		    nodes = fluidSimulator.getFutureNodes(nodes, size);		        
-//		}
 
 		
 		
@@ -61,13 +65,19 @@ public class MainApp {
 				
 	}
 	
-	public static void writeParticlesToFile(List<Particle> particles, int n, int size) throws UnsupportedEncodingException, FileNotFoundException, IOException {
+	public static void writeParticlesToFile(List<Particle> particles, int n, double time) throws UnsupportedEncodingException, FileNotFoundException, IOException {
 		
-//		try (Writer writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("output_t" + step + ".txt"), "utf-8"))) {
-//			writer.write(String.valueOf(nodes.length * nodes[0].length) + "\n" + "\n");
-//		    		
-//		}			    	
-//	    step++;
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("output_t=" + time + ".txt"), "utf-8"))) {
+			writer.write(String.valueOf(n) + "\n" + "\n");
+			for(Particle p: particles) {
+				writer.write(String.valueOf(p.getX()) + " " + String.valueOf(p.getY()) + " " 
+					+ String.valueOf(p.getVelocityX()) + " " + String.valueOf(p.getVelocityY()) 
+					+ " " + String.valueOf(p.getRadius()) + " " + String.valueOf(p.getMass()) + "\n");
+			}
+		    		
+		}
+
+		return;			    	
 	}
 	
 	public static void writeParticleFractionFile(List<Particle> particles, short[][] nodes, int size, Writer w1, Writer w2, Writer w3) throws UnsupportedEncodingException, FileNotFoundException, IOException {
@@ -94,6 +104,16 @@ public class MainApp {
 //		}
 //
 //	    step++;
+	}
+
+	public static double calculateFractionParticle(List<Particle> particles, int total_particles) {
+		int fp = 0;
+		for(Particle p:particles) {
+			if(p.getX() > 0.12) {
+				fp ++;
+			}
+		}
+		return fp/total_particles;
 	}
 	
     public static double calculateSD(double numArray[]) {

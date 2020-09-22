@@ -1,3 +1,4 @@
+package src;
 
 public class Particle {
 	
@@ -37,27 +38,28 @@ public class Particle {
     }
 
     //checks if it will collide with partition wall or pass through gap
-    public double xCollision(double length, double gap) {
-         if(x > (length/2 - gap/2) && x < (length/2 + gap/2)) {
-            if(vx > 0) {
+    public double xCollision(double length, double height, double gap) {
+         if((y > (height/2 - gap/2) && y < (height/2 + gap/2)) || gap == 0.0) {
+            if(vx > 0) 
                 return (length - radius - x)/vx;
-            }
-            if(vx < 0) {
+            if(vx < 0) 
                 return (radius - x)/vx;
-            }
-            else
-                return -1;
         }
         else {
-            if(vx > 0) {
-                return (length/2 - radius - x)/vx;
+            if(x < length/2) {
+                if(vx > 0) 
+                    return (length/2 - radius - x)/vx;
+                if(vx < 0)
+                    return (radius - x)/vx;
             }
-            if(vx < 0) {
-                return (length/2 + radius - x)/vx;
+            else {
+                if(vx < 0)
+                    return (length/2 + radius - x)/vx;
+                if(vx > 0)
+                    return (length - radius - x)/vx;
             }
-            else
-                return -1;
         }
+        return -1;
     }
 
     public double timeToCollision(Particle j) {
