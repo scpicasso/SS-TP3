@@ -1,8 +1,11 @@
 import java.util.Comparator;
 
 public class Event implements Comparable<Event>{
-	private int i;
-	private int j;
+	private Particle i;
+	private Particle j;
+	private int currentI;
+	private int currentJ;
+	private double time;
 	
 	//if i is null then its a collision between a horizontal wall and particle j
 	//if j is null then its a collision between a vertical wall and particle i
@@ -53,7 +56,7 @@ public class Event implements Comparable<Event>{
 
     @Override
     public int compareTo(Event o) {
-    	return this.getTime() - o.getTime();
+    	return (int) (this.getTime() - o.getTime());
     }
 
 }

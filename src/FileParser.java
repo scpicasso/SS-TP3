@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class FileParser {
 	private int particleCount;
 	private double gap;
+	private double length;
+	private double height;
 	private LinkedList<Particle> particles;
 
 	public FileParser() {
@@ -18,8 +20,10 @@ public class FileParser {
 //    	System.out.println(filePath);
     	FileInputStream fis = new FileInputStream(filePath);  
         Scanner sc = new Scanner(fis);
-        gap = sc.nextDouble();
         particleCount = sc.nextInt();
+        length = sc.nextDouble();
+        height = sc.nextDouble();
+        gap = sc.nextDouble();
         for (int i = 0; i < particleCount; i++) {
         	double x = sc.nextDouble();
         	double y = sc.nextDouble();
@@ -35,7 +39,15 @@ public class FileParser {
 	public double getGap() {
 		return gap;
 	}
-	
+
+	public double getHeigth() {
+		return height;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
 	public int getN() {
 		return particleCount;
 	}

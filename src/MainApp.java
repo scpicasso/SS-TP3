@@ -7,11 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.List;
 
-import tp2.FileParser;
-import tp2.LatticeGasSimulator;
-import tp2.NodeManager;
-import tp2.Particle;
-
 public class MainApp {
 	
 	private static String input_file = "input.txt";
@@ -33,9 +28,10 @@ public class MainApp {
 				
 		CollisionSystem cs = new CollisionSystem(particles, 0.24, 0.09, fp.getGap());
 		
-		for (int i = 0; i < 2000; i++) {
-			cs.findNextEventForAllParticles();
-		}		
+		cs.findEventsForAllParticles();
+		for (int i = 0; i < 500; i++) {
+			cs.nextEvent();
+		}
 		
 //		for (int i = 0; i < 2000; i++) {
 //			writeParticlesToFile(particles, nodes, fp.getN(), size);

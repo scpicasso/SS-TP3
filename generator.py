@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import random
+<<<<<<< HEAD
 from math import sqrt
 
 
@@ -23,6 +24,31 @@ def generate_file(name, num_particles, length, height, mass, radius):
   return
 
 def generate_solids_file(gap):
+=======
+import math
+
+#rx ry vx vy mass radius 
+
+def generate_file(name, num_particles, length, height, mass, radius, gap):
+	file = open(name, 'w')
+	file.write(str(num_particles) + '\n' + '\n')
+	file.write(str(length) + '\n')
+	file.write(str(height) + '\n')
+	file.write(str(gap) + '\n')
+	for i in range(0, num_particles):
+		x_velocity = random.uniform(-0.01,0.01)
+		y_velocity = math.sqrt(0.01-(x_velocity**2))
+		if(random.randint(0,1) == 1):
+			y_velocity = y_velocity*-1
+
+		file.write(str(random.uniform(0, (length - 1)/2)) + '  ' + 
+		str(random.uniform(0, height - 1)) + '  ' + 
+		str(x_velocity) + ' ' + str(y_velocity) + ' ' +
+		str(mass) + ' ' + str(radius) + '\n')
+	return
+
+def generate_solids_file():
+>>>>>>> 353a5f57d76fbf630c9db8ce0857f41ba205c011
   dfile = open('solid.xyz', 'w')
   dfile.write(str(int((0.09 - gap)*1000 +240*2 + 90*2 - 5)) + '\n' + '\n')
   for i in range(0, 240):
@@ -45,6 +71,7 @@ def generate_solids_file(gap):
 
 num_particles = input("Insert number of particles:\n")
 try:
+<<<<<<< HEAD
   part_int = int(num_particles)
   gap = input("Insert gap size:\n")
   try:
@@ -53,5 +80,15 @@ try:
     generate_solids_file(gap_int)
   except ValueError:
     print("Invalid input")
+=======
+	part_int = int(num_particles)
+	gap = input("Insert gap size:\n")
+	try:
+		gap_d = float(gap)
+		generate_file('input.txt', part_int, 0.24, 0.09, 1, 0.0015, gap_d)
+		generate_solids_file()
+	except ValueError:
+		print("Invalid input")
+>>>>>>> 353a5f57d76fbf630c9db8ce0857f41ba205c011
 except ValueError:
 	print("Invalid input")

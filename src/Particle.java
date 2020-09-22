@@ -1,4 +1,3 @@
-package src;
 
 public class Particle {
 	
@@ -61,7 +60,7 @@ public class Particle {
         }
     }
 
-    public double particleCollision(Particle j) {
+    public double timeToCollision(Particle j) {
     	double deltaX = j.getX() - x;
     	double deltaY = j.getY() - y;
     	double deltaVx = j.getVelocityX() - vx;
@@ -88,14 +87,14 @@ public class Particle {
     }
 
     public void bounce(Particle b) {
-        deltaX = b.getX() - x;
-        deltaY = b.getY() - y;
-        deltaVx = b.getVelocityX() - vx;
-        deltaVy = b.getVelocityY() - vy;
-        deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
-        jValue = 2*mass*b.getMass()*deltaVR/((radius + b.getRadius())*(mass + b.getMass()));
-        jX = jValue*deltaX/(radius + b.getRadius);
-        jY = jValue*deltaY/(radius + b.getRadius);
+    	double deltaX = b.getX() - x;
+    	double deltaY = b.getY() - y;
+    	double deltaVx = b.getVelocityX() - vx;
+    	double deltaVy = b.getVelocityY() - vy;
+    	double deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
+    	double jValue = 2*mass*b.getMass()*deltaVR/((radius + b.getRadius())*(mass + b.getMass()));
+    	double jX = jValue*deltaX/(radius + b.getRadius());
+    	double jY = jValue*deltaY/(radius + b.getRadius());
         vx = vx + jX/mass;
         vy = vy + jX/mass;
         b.setVelocityX(b.getVelocityX() - jX/b.getMass());
