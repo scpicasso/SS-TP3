@@ -9,7 +9,6 @@ public class CollisionSystem {
 	double current_time;
 	double gapSize;
 
-
 	public CollisionSystem(List<Particle> particles, double length, double height, double gap) {
 		this.particles = particles;
 		this.events = new ArrayList<Event>();
@@ -27,14 +26,14 @@ public class CollisionSystem {
 		events.add(new Event(null, p, p.xCollision(length, gapSize) + current_time));
 		events.add(new Event(p, null, p.yCollision(height) + current_time));
 		for(Particle j : particles) {
-			events.add(new Event(p, j, p.particleCollision(j) + current_time));
+			events.add(new Event(p, j, p.timeToCollision(j) + current_time));
 		}
 		return;
 	}
 
 	public void findEventsForAllParticles() {
 		for(Particle p : particles) {
-			findNextEventForParticle(p);
+			findEventsForParticle(p);
 		}
 		Collections.sort(events);
 		return;
@@ -44,10 +43,10 @@ public class CollisionSystem {
 		if(events.size() == 0) {
 			return;
 		}
-		Event e = events[0];
+		Event e = events.get(0);
 		while(e.wasSuperveningEvent()) {
 			events.remove(0);
-			e = events[0];
+			e = events.get(0);
 		}
 
 		putEventInAction(e);
@@ -66,29 +65,29 @@ public class CollisionSystem {
 		moveParticles(new_time - current_time);
 		current_time = new_time;
 		if(a == null && b != null) {
-			particles[b.getId()].bounceBackX();
-			particles[b.getId()].addCollision();
-			findNextEventForParticle(b);
+			b.bounceBackX();
+			b.addCollision();
+			findEventsForParticle(b);
 		}
 		else if(a != null && b == null) {
-			particles[a.getId()].bounceBackY();
-			particles[a.getId()].addCollision();
-			findNextEventForParticle(a);
+			a.bounceBackY();
+			a.addCollision();
+			findEventsForParticle(a);
 		}
 		else {
-			particles[a.getId()].bounce(particles[b.getId()]);
-			particles[a.getId()].addCollision();
-			particles[b.getId()].addCollision();
-			findNextEventForParticle(a);
-			findNextEventForParticle(b);
+			a.bounce(b);
+			a.addCollision();
+			b.addCollision();
+			findEventsForParticle(a);
+			findEventsForParticle(b);
 		}
 		return;
 	}
 
 	public void moveParticles(double time) {
 		for(Particle p : particles) {
-			displacement_x = p.getVelocityX()*time;
-			displacement_y = p.getVelocityY()*time;
+			double displacement_x = p.getVelocityX()*time;
+			double displacement_y = p.getVelocityY()*time;
 			p.setX(p.getX() + displacement_x);
 			p.setY(p.getY() + displacement_y);
 		}
