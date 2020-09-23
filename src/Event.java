@@ -1,8 +1,6 @@
-package src;
 
-import java.util.Comparator;
-
-public class Event implements Comparable<Event>{
+public class Event implements Comparable<Event> {
+	
 	private Particle i;
 	private Particle j;
 	private int currentI;
@@ -58,15 +56,15 @@ public class Event implements Comparable<Event>{
 
     @Override
     public int compareTo(Event o) {
-    	if(this.getTime() > o.getTime()) {
-            return 1;
-        }
-        if(this.getTime() < o.getTime()) {
-            return -1;
-        }
-        else {
-            return 0;
-        }
+//    	if (this.getTime() < o.getTime()) {
+//    		return -1;
+//    	} 
+//    	if (this.getTime() >= o.getTime()) {
+//    		return 1;
+//    	} 
+//    	return 0;
+    	
+    	return Double.compare(this.getTime(), o.getTime());
     }
 
 }

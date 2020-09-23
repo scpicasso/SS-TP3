@@ -8,14 +8,23 @@ from math import sqrt
 def generate_file(name, num_particles, length, height, gap, mass, radius):
   file = open(name, 'w')
   file.write(str(num_particles) + '\n' + '\n')
+  file.write(str(length) + '\n' + '\n')
+  file.write(str(height) + '\n' + '\n')
   file.write(str(gap) + '\n' + '\n')
+  particles = []
   for i in range(0, num_particles):
     x_velocity = random.uniform(-0.01,0.01)
     y_velocity = sqrt(0.01-(x_velocity**2))
     if(random.randint(0,1) == 1):
       y_velocity = y_velocity*-1
-    file.write(str(random.uniform(0.001, (length - 0.001)/2)) + '  ' + 
-      str(random.uniform(0.001, height - 0.001)) + '  ' + 
+    x = random.uniform(0.0016, (length - 0.0016)/2)
+    y = random.uniform(0.0016, height - 0.0016)
+    for pos in particles:
+      while ( sqrt((pos[0] - x)**2 + (pos[1] - y)**2) < radius*2):
+        x = random.uniform(0.0016, (length - 0.0016)/2)
+        y = random.uniform(0.0016, height - 0.0016)
+    particles.append([x,y])
+    file.write(str(x) + '  ' + str(y) + '  ' + 
       str(x_velocity) + ' ' + str(y_velocity) + ' ' +
       str(mass) + ' ' + str(radius) + '\n')
   return

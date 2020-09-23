@@ -1,5 +1,3 @@
-package src;
-
 import java.util.*;
 
 public class CollisionSystem {
@@ -7,13 +5,13 @@ public class CollisionSystem {
 	private double length;
 	private double height;
 	List<Particle> particles;
-	List<Event> events;
+	SortedSet<Event> events;
 	double current_time;
 	double gapSize;
 
 	public CollisionSystem(List<Particle> particles, double length, double height, double gap) {
 		this.particles = particles;
-		this.events = new ArrayList<Event>();
+		this.events = new TreeSet<>();
 		this.current_time = 0;
 		this.height = height;
 		this.length = length;
@@ -25,20 +23,11 @@ public class CollisionSystem {
 	}
 
 	public void findEventsForParticle(Particle p) {
-		double tx = p.xCollision(length, height, gapSize);
-		double ty = p.yCollision(height);
-		if(tx >= 0) {
-			events.add(new Event(null, p, tx + current_time));
-		}
-		if(ty >= 0) {
-			events.add(new Event(p, null, ty + current_time));
-		}
-		double tc;
+		events.add(new Event(null, p, p.xCollision(length, height, gapSize) + current_time));
+		events.add(new Event(p, null, p.yCollision(height) + current_time));
 		for(Particle j : particles) {
-			tc = p.timeToCollision(j);
-			if(tc >= 0) {
-				events.add(new Event(p, j, tc + current_time));
-			}
+//			if (p.compareTo(j) != 0)
+			events.add(new Event(p, j, p.timeToCollision(j) + current_time));
 		}
 		return;
 	}
@@ -47,7 +36,6 @@ public class CollisionSystem {
 		for(Particle p : particles) {
 			findEventsForParticle(p);
 		}
-		Collections.sort(events);
 		return;
 	}
 
@@ -55,15 +43,20 @@ public class CollisionSystem {
 		if(events.size() == 0) {
 			return;
 		}
-		Event e = events.get(0);
-		while(e.wasSuperveningEvent()) {
-			events.remove(0);
-			e = events.get(0);
+		
+		for (Event e: events) { 
+//			if ((int)(e.getTime()) < 0)
+//				System.out.println(e.getTime());
 		}
 
-		putEventInAction(e);
-		events.remove(0);
-		Collections.sort(events);
+		Event event = events.first();
+		while(event.wasSuperveningEvent()) {
+			events.remove(event);
+			event = events.first();
+		}
+
+		putEventInAction(event);
+		events.remove(event);
 		return;
 	}
 

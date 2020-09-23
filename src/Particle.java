@@ -1,6 +1,5 @@
-package src;
 
-public class Particle {
+public class Particle implements Comparable<Particle>{
 	
     private int id;
     private double x;
@@ -9,9 +8,12 @@ public class Particle {
     private double mass;
     private double vx;
     private double vy;
-    private Event lastE;
+    static int K = 0;
+
+	private Event lastE;
     private Event newE;
     private int counter;
+    private static final double INFINITY = Double.POSITIVE_INFINITY;
 
     public Particle(int id, double x, double y, double vx, double vy, double mass, double radius) {
         this.id = id;
@@ -34,12 +36,13 @@ public class Particle {
             return (radius - y)/vy;
         }
         else
-            return -1;
+            return INFINITY;
     }
+
 
     //checks if it will collide with partition wall or pass through gap
     public double xCollision(double length, double height, double gap) {
-         if((y > (height/2 - gap/2) && y < (height/2 + gap/2)) || gap == 0.0) {
+        if((y > (height/2 - gap/2) && y < (height/2 + gap/2)) || gap == 0.0) {
             if(vx > 0) 
                 return (length - radius - x)/vx;
             if(vx < 0) 
@@ -59,10 +62,13 @@ public class Particle {
                     return (length - radius - x)/vx;
             }
         }
-        return -1;
+        return INFINITY;
     }
 
     public double timeToCollision(Particle j) {
+    	if (this == j) {
+    		return INFINITY;
+    	}
     	double deltaX = j.getX() - x;
     	double deltaY = j.getY() - y;
     	double deltaVx = j.getVelocityX() - vx;
@@ -73,13 +79,23 @@ public class Particle {
             (Math.pow(deltaX,2) + Math.pow(deltaY,2) - 
                 Math.pow(j.getRadius() + radius, 2)));
         if(deltaVR >= 0 || dValue < 0) {
-            return -1;
+            return INFINITY;
         }
         else {
-            return -((deltaVR + Math.sqrt(dValue))/(Math.pow(deltaVx,2) + Math.pow(deltaVy,2)));
+        	double aux = -((deltaVR + Math.sqrt(dValue))/(Math.pow(deltaVx,2) + Math.pow(deltaVy,2))); 
+            if (aux <= 0) {
+//            	System.out.println("deltaVR: " + deltaVR + "dValue: " + Math.sqrt(dValue));
+//            	System.out.println("Vix: " + vx + "	Vjx: " + j.getVelocityX());
+//            	System.out.println("ix: " + x + "	jx: " + j.getX());
+//            	System.out.println("Viy: " + vy + "	Vjy: " + j.getVelocityY());
+//            	System.out.println("iy: " + y + "	jy: " + j.getY());
+//            	System.out.println();
+            	return INFINITY;
+            }
+            return aux;
         }
-    }
-
+    }    
+    
     public void bounceBackX() {
         this.vx = -vx;
     }
@@ -171,5 +187,39 @@ public class Particle {
     public void setVelocityY(double vy){
         this.vy = vy;
     }
+
+	@Override
+	public int compareTo(Particle j) {
+        double dx  = j.x - this.x;
+        double dy  = j.y - this.y;
+		if (Math.sqrt(dx*dx + dy*dy) <= (this.radius*2)) {			
+			return 0;
+		}
+		return this.id - j.id;
+	}
+
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result + id;
+//		return result;
+//	}
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj)
+//			return true;
+//		if (obj == null)
+//			return false;
+//		if (getClass() != obj.getClass())
+//			return false;
+//		Particle other = (Particle) obj;
+//		if (compareTo(other) != 0)
+//			return false;
+//		return true;
+//	}
+	
+
 
 }

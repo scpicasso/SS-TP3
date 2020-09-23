@@ -1,5 +1,3 @@
-package src;
-
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,9 +10,12 @@ import java.util.List;
 public class MainApp {
 	
 	private static String input_file = "input.txt";
+	private static int size = 200;
 	private static int step, stepl;
+	private static boolean corte;
 	private static double auxValues[];
-
+	private static int valuesIdx = 0;
+	
 	public static void main(String[] args) throws IOException {
 		List<Particle> particles = null;
 		FileParser fp = new FileParser();
@@ -26,13 +27,14 @@ public class MainApp {
 		}
 				
 		CollisionSystem cs = new CollisionSystem(particles, 0.24, 0.09, fp.getGap());
-		int flag_counter = 0;
-		
 		cs.findEventsForAllParticles();
+		
+		int flag_counter = 0;
 		while (flag_counter < 50) {
-			writeParticlesToFile(particles, fp.getN(), cs.getTime());
+			writeParticlesToFile(particles, particles.size(), cs.getTime());
 			cs.nextEvent();
-			double frac_part = calculateFractionParticle(particles, fp.getN());
+			double frac_part = calculateFractionParticle(particles, particles.size());
+			System.out.println(frac_part);
 			if( frac_part < 0.6 && frac_part > 0.4 ) {
 				flag_counter ++;
 			}
@@ -41,7 +43,6 @@ public class MainApp {
 			}
 
 		}
-
 		
 		
 //		try (Writer writer3 = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("20001.txt"), "utf-8"))) {
@@ -82,38 +83,17 @@ public class MainApp {
 	
 	public static void writeParticleFractionFile(List<Particle> particles, short[][] nodes, int size, Writer w1, Writer w2, Writer w3) throws UnsupportedEncodingException, FileNotFoundException, IOException {
 		
-//		double n = 0, a = 0, b = 0, fpa = 0, fpb = 0;	
-//
-//	    fpa = a/n;
-//	    fpb = b/n;
-//		w1.write(String.valueOf(step) + "\t" + String.valueOf(fpa) + "\n");
-//		w2.write(String.valueOf(step) + "\t" + String.valueOf(fpb) + "\n");
-//	    
-//		
-//		auxValues[valuesIdx++] = fpa;
-//		
-//		
-//		if (valuesIdx == 500)
-//			valuesIdx = 0;
-//		
-//		
-//		if (calculateSD(auxValues) < 0.01 && !corte) {
-//    		w3.write(String.valueOf(step) + " ");
-//			System.out.println(step);	
-//			corte = true;
-//		}
-//
-//	    step++;
-	}
 
+	}
+	
 	public static double calculateFractionParticle(List<Particle> particles, int total_particles) {
 		int fp = 0;
-		for(Particle p:particles) {
-			if(p.getX() > 0.12) {
+		for(Particle p: particles) {
+			if(p.getX() >= 0.12) {
 				fp ++;
 			}
 		}
-		return fp/total_particles;
+		return fp/(double)(total_particles);
 	}
 	
     public static double calculateSD(double numArray[]) {
