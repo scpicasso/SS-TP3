@@ -1,3 +1,5 @@
+package src;
+
 import java.util.*;
 
 public class CollisionSystem {
@@ -11,8 +13,8 @@ public class CollisionSystem {
 
 	public CollisionSystem(List<Particle> particles, double length, double height, double gap) {
 		this.particles = particles;
-		this.events = new TreeSet<>();
-		this.current_time = 0;
+		this.events = new TreeSet<>(); 
+		this.current_time = 0.0;
 		this.height = height;
 		this.length = length;
 		this.gapSize = gap;
@@ -23,11 +25,18 @@ public class CollisionSystem {
 	}
 
 	public void findEventsForParticle(Particle p) {
-		events.add(new Event(null, p, p.xCollision(length, height, gapSize) + current_time));
-		events.add(new Event(p, null, p.yCollision(height) + current_time));
+		double tx = p.xCollision(length, height, gapSize);
+		double ty = p.yCollision(height);
+
+		if(tx > 0)
+			events.add(new Event(null, p, tx));
+		if(ty > 0)
+			events.add(new Event(p, null, ty));
+
 		for(Particle j : particles) {
-//			if (p.compareTo(j) != 0)
-			events.add(new Event(p, j, p.timeToCollision(j) + current_time));
+			double tc = p.timeToCollision(j);
+			if(tc > 0)
+				events.add(new Event(p, j, tc));
 		}
 		return;
 	}
@@ -43,18 +52,13 @@ public class CollisionSystem {
 		if(events.size() == 0) {
 			return;
 		}
-		
-		for (Event e: events) { 
-//			if ((int)(e.getTime()) < 0)
-//				System.out.println(e.getTime());
-		}
 
+		int counter = 0;
 		Event event = events.first();
 		while(event.wasSuperveningEvent()) {
 			events.remove(event);
 			event = events.first();
 		}
-
 		putEventInAction(event);
 		events.remove(event);
 		return;
@@ -67,34 +71,34 @@ public class CollisionSystem {
 		if(a == null && b == null) {
 			return;
 		}
-		moveParticles(new_time - current_time);
-		current_time = new_time;
+		moveParticles(new_time);
+		current_time = current_time + new_time;
 		if(a == null && b != null) {
 			b.bounceBackX();
 			b.addCollision();
-			findEventsForParticle(b);
+			//findEventsForParticle(b);
 		}
-		else if(a != null && b == null) {
+		if(a != null && b == null) {
 			a.bounceBackY();
 			a.addCollision();
-			findEventsForParticle(a);
+			//findEventsForParticle(a);
 		}
-		else {
+		if(a != null && b!= null) {
 			a.bounce(b);
 			a.addCollision();
 			b.addCollision();
-			findEventsForParticle(a);
-			findEventsForParticle(b);
+			//findEventsForParticle(a);
+			//findEventsForParticle(b);
 		}
+		events.clear(); 
+		findEventsForAllParticles();
 		return;
 	}
 
 	public void moveParticles(double time) {
 		for(Particle p : particles) {
-			double displacement_x = p.getVelocityX()*time;
-			double displacement_y = p.getVelocityY()*time;
-			p.setX(p.getX() + displacement_x);
-			p.setY(p.getY() + displacement_y);
+			p.setX(p.getX() + p.getVelocityX()*time);
+			p.setY(p.getY() + p.getVelocityY()*time);
 		}
 		return;
 	}

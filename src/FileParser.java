@@ -1,3 +1,5 @@
+package src;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -20,7 +22,6 @@ public class FileParser {
 	
     public List<Particle> getParticles(String filePath) throws FileNotFoundException {
         List<Particle> ret = new LinkedList<>();
-//    	System.out.println(filePath);
     	FileInputStream fis = new FileInputStream(filePath);  
         Scanner sc = new Scanner(fis);
         particleCount = sc.nextInt();
@@ -34,32 +35,9 @@ public class FileParser {
         	double vy = sc.nextDouble();
         	double mass = sc.nextDouble();
         	double r = sc.nextDouble();
-        	Particle p = new Particle(i, x, y, vx, vy, mass, r);
-//        	while (particles.contains(p)) {
-//        		double newX = ThreadLocalRandom.current().nextDouble(0.0016, (this.length - 0.0016)/2);
-//        		p.setX(newX);
-//        		double newY = ThreadLocalRandom.current().nextDouble(0.0016, this.height - 0.0016);
-//        		p.setY(newY);
-//        	}        	
-//        	for (Particle u: particles) {
-//        		while (u.compareTo(p) == 0) {
-//            		double newX = ThreadLocalRandom.current().nextDouble(0.0016, (this.length - 0.0016)/2);
-//            		p.setX(newX);
-//            		double newY = ThreadLocalRandom.current().nextDouble(0.0016, this.height - 0.0016);
-//            		p.setY(newY);
-//        		}
-//        	}
-        	boolean flag = false;
-        	for (Particle u: particles) {
-        		if (u.compareTo(p) == 0) {
-        			flag = true;
-        		}
-        		
-        	}        
-        	if (!flag)
-        		particles.add(p);
+        	Particle p = new Particle(i, x, y, vx, vy, mass, r);    
+        	particles.add(p);
         }            
-        System.out.println(particles.size());
         ret.addAll(particles);
 		return ret;       
 	}

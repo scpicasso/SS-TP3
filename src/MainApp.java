@@ -1,3 +1,5 @@
+package src;
+
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,6 +37,7 @@ public class MainApp {
 			cs.nextEvent();
 			double frac_part = calculateFractionParticle(particles, particles.size());
 			System.out.println(frac_part);
+			System.out.println("\n" + cs.getTime() + "\n\n");
 			if( frac_part < 0.6 && frac_part > 0.4 ) {
 				flag_counter ++;
 			}

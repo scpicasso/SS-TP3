@@ -1,3 +1,4 @@
+package src;
 
 public class Particle implements Comparable<Particle>{
 	
@@ -13,7 +14,6 @@ public class Particle implements Comparable<Particle>{
 	private Event lastE;
     private Event newE;
     private int counter;
-    private static final double INFINITY = Double.POSITIVE_INFINITY;
 
     public Particle(int id, double x, double y, double vx, double vy, double mass, double radius) {
         this.id = id;
@@ -30,67 +30,60 @@ public class Particle implements Comparable<Particle>{
     
     public double yCollision(double height) {
         if(vy > 0) {
-            return (height - radius - y)/vy;
+            return ((height - radius - y)/vy);
         }
         if(vy < 0) {
-            return (radius - y)/vy;
+            return ((radius - y)/vy);
         }
         else
-            return INFINITY;
+            return -1;
     }
 
 
     //checks if it will collide with partition wall or pass through gap
     public double xCollision(double length, double height, double gap) {
-        if((y > (height/2 - gap/2) && y < (height/2 + gap/2)) || gap == 0.0) {
-            if(vx > 0) 
-                return (length - radius - x)/vx;
-            if(vx < 0) 
-                return (radius - x)/vx;
+
+        if(vx > 0){
+            if((y > (height/2 - gap/2) && y < (height/2 + gap/2)) || gap == 0.0)
+                return ((length-radius-x)/vx);
+            else if(x < length/2)
+                return ((length/2 - radius - x)/vx);
+            else
+                return ((length-radius-x)/vx);
         }
-        else {
-            if(x < length/2) {
-                if(vx > 0) 
-                    return (length/2 - radius - x)/vx;
-                if(vx < 0)
-                    return (radius - x)/vx;
-            }
-            else {
-                if(vx < 0)
-                    return (length/2 + radius - x)/vx;
-                if(vx > 0)
-                    return (length - radius - x)/vx;
-            }
+
+        if(vx < 0){
+            if((y > (height/2 - gap/2) && y < (height/2 + gap/2)) || gap == 0.0)
+                return ((radius-x)/vx);
+            else if(x < length/2)
+                return ((radius - x)/vx);
+            else
+                return ((length/2+radius-x)/vx);
+
         }
-        return INFINITY;
+
+        return -1;
     }
 
     public double timeToCollision(Particle j) {
-    	if (this == j) {
-    		return INFINITY;
+    	if (this.id == j.getId()) {
+    		return -1;
     	}
     	double deltaX = j.getX() - x;
     	double deltaY = j.getY() - y;
     	double deltaVx = j.getVelocityX() - vx;
     	double deltaVy = j.getVelocityY() - vy;
     	double deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
-    	double dValue = Math.pow(deltaVR, 2) - 
-        ((Math.pow(deltaVx,2) + Math.pow(deltaVy,2))*
-            (Math.pow(deltaX,2) + Math.pow(deltaY,2) - 
-                Math.pow(j.getRadius() + radius, 2)));
+    	double dValue = deltaVR*deltaVR - (deltaVx*deltaVx + deltaVy*deltaVy)*(deltaX*deltaX + deltaY*deltaY - 
+            (j.getRadius() + radius)*(j.getRadius() + radius));
         if(deltaVR >= 0 || dValue < 0) {
-            return INFINITY;
+            return -1;
         }
         else {
-        	double aux = -((deltaVR + Math.sqrt(dValue))/(Math.pow(deltaVx,2) + Math.pow(deltaVy,2))); 
+        	double aux = -(deltaVR + Math.sqrt(dValue))/
+                (deltaVx*deltaVx + deltaVy*deltaVy); 
             if (aux <= 0) {
-//            	System.out.println("deltaVR: " + deltaVR + "dValue: " + Math.sqrt(dValue));
-//            	System.out.println("Vix: " + vx + "	Vjx: " + j.getVelocityX());
-//            	System.out.println("ix: " + x + "	jx: " + j.getX());
-//            	System.out.println("Viy: " + vy + "	Vjy: " + j.getVelocityY());
-//            	System.out.println("iy: " + y + "	jy: " + j.getY());
-//            	System.out.println();
-            	return INFINITY;
+            	return -1;
             }
             return aux;
         }
@@ -110,9 +103,9 @@ public class Particle implements Comparable<Particle>{
     	double deltaVx = b.getVelocityX() - vx;
     	double deltaVy = b.getVelocityY() - vy;
     	double deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
-    	double jValue = 2*mass*b.getMass()*deltaVR/((radius + b.getRadius())*(mass + b.getMass()));
-    	double jX = jValue*deltaX/(radius + b.getRadius());
-    	double jY = jValue*deltaY/(radius + b.getRadius());
+    	double jValue = (2*mass*b.getMass()*deltaVR)/((radius + b.getRadius())*(mass + b.getMass()));
+    	double jX = (jValue*deltaX)/(radius + b.getRadius());
+    	double jY = (jValue*deltaY)/(radius + b.getRadius());
         vx = vx + jX/mass;
         vy = vy + jX/mass;
         b.setVelocityX(b.getVelocityX() - jX/b.getMass());

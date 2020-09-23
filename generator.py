@@ -13,16 +13,23 @@ def generate_file(name, num_particles, length, height, gap, mass, radius):
   file.write(str(gap) + '\n' + '\n')
   particles = []
   for i in range(0, num_particles):
+    i = 0
+    x = random.uniform(0.0016, (length - 0.0016)/2)
+    y = random.uniform(0.0016, height - 0.0016)
+    while (i < len(particles)):
+      if(sqrt((particles[i][0] - x)**2 + (particles[i][1] - y)**2) < radius*2):
+        i = 0
+      else:
+        i = i + 1
+      if(i == 0):
+        x = random.uniform(0.0016, (length - 0.0016)/2)
+        y = random.uniform(0.0016, height - 0.0016)
+
     x_velocity = random.uniform(-0.01,0.01)
     y_velocity = sqrt(0.01-(x_velocity**2))
     if(random.randint(0,1) == 1):
       y_velocity = y_velocity*-1
-    x = random.uniform(0.0016, (length - 0.0016)/2)
-    y = random.uniform(0.0016, height - 0.0016)
-    for pos in particles:
-      while ( sqrt((pos[0] - x)**2 + (pos[1] - y)**2) < radius*2):
-        x = random.uniform(0.0016, (length - 0.0016)/2)
-        y = random.uniform(0.0016, height - 0.0016)
+
     particles.append([x,y])
     file.write(str(x) + '  ' + str(y) + '  ' + 
       str(x_velocity) + ' ' + str(y_velocity) + ' ' +
