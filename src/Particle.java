@@ -61,27 +61,28 @@ public class Particle implements Comparable<Particle>{
         return -1;
     }
 
-    public double timeToCollision(Particle j) {
-    	if (this.id == j.getId()) {
+    public double timeToCollision(Particle b) {
+    	if (id == b.getId()) {
     		return -1;
     	}
-    	double deltaX = j.getX() - x;
-    	double deltaY = j.getY() - y;
-    	double deltaVx = j.getVelocityX() - vx;
-    	double deltaVy = j.getVelocityY() - vy;
-    	double deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
+        
+        double rads = radius + b.getRadius();
+
+        double deltaX = b.getX() - x;
+        double deltaY = b.getY() - y;
+        double deltaVx = b.getVelocityX() - vx;
+        double deltaVy = b.getVelocityY() - vy;
+
+        double deltaVR = (deltaVx*deltaX) + (deltaVy*deltaY);
+
     	double dValue = deltaVR*deltaVR - (deltaVx*deltaVx + deltaVy*deltaVy)*(deltaX*deltaX + deltaY*deltaY - 
-            (j.getRadius() + radius)*(j.getRadius() + radius));
+            rads*rads);
         if(deltaVR >= 0 || dValue < 0) {
             return -1;
         }
         else {
-        	double aux = -(deltaVR + Math.sqrt(dValue))/
-                (deltaVx*deltaVx + deltaVy*deltaVy); 
-            if (aux < 0) {
-            	return -1;
-            }
-            return aux;
+            return -(deltaVR + Math.sqrt(dValue))/
+                (deltaVx*deltaVx + deltaVy*deltaVy);
         }
     }    
     
@@ -94,16 +95,25 @@ public class Particle implements Comparable<Particle>{
     }
 
     public void bounce(Particle b) {
-    	double deltaX = b.getX() - x;
+    	double rads = radius + b.getRadius();
+
+        double deltaX = b.getX() - x;
     	double deltaY = b.getY() - y;
-    	double deltaVx = b.getVelocityX() - vx;
-    	double deltaVy = b.getVelocityY() - vy;
-    	double deltaVR = (deltaVx * deltaX) + (deltaVy * deltaY);
-    	double jValue = (2*mass*b.getMass()*deltaVR)/((radius + b.getRadius())*(mass + b.getMass()));
-    	double jX = (jValue*deltaX)/(radius + b.getRadius());
-    	double jY = (jValue*deltaY)/(radius + b.getRadius());
+        double deltaVx = b.getVelocityX() - vx;
+        double deltaVy = b.getVelocityY() - vy;
+
+        double deltaVR = (deltaVx*deltaX) + (deltaVy*deltaY);
+
+        double jValue1 = 2*mass*b.getMass()*deltaVR;
+        double jValue2 = (radius + b.getRadius())*(mass + b.getMass());
+        double jValue = jValue1/jValue2;
+
+    	double jX = (jValue*deltaX)/rads;
+    	double jY = (jValue*deltaY)/rads;
+
         vx = vx + jX/mass;
-        vy = vy + jX/mass;
+        vy = vy + jY/mass;
+
         b.setVelocityX(b.getVelocityX() - jX/b.getMass());
         b.setVelocityY(b.getVelocityY() - jY/b.getMass());
 
@@ -117,8 +127,8 @@ public class Particle implements Comparable<Particle>{
         return Math.abs(vy)*2*mass;
     }
 
-    public double addTrajectory(double new_x, double new_y) {
-        trajectory += getDistance(x1, new_x, y1, new_y);
+    public void addTrajectory(double new_x, double new_y) {
+        trajectory += getDistance(x, new_x, y, new_y);
     }
 
     public double getTrajectory() {

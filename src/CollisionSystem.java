@@ -71,22 +71,22 @@ public class CollisionSystem {
 		if(a == null && b == null) {
 			return;
 		}
+		if(a!= null)
+			a.addCollision();
+		if(b != null)
+			b.addCollision();
 		moveParticles(new_time);
 		current_time = current_time + new_time;
 		if(a == null && b != null) {
 			b.bounceBackX();
-			b.addCollision();
 			//findEventsForParticle(b);
 		}
 		if(a != null && b == null) {
 			a.bounceBackY();
-			a.addCollision();
 			//findEventsForParticle(a);
 		}
 		if(a != null && b!= null) {
 			a.bounce(b);
-			a.addCollision();
-			b.addCollision();
 			//findEventsForParticle(a);
 			//findEventsForParticle(b);
 		}
@@ -97,8 +97,12 @@ public class CollisionSystem {
 
 	public void moveParticles(double time) {
 		for(Particle p : particles) {
-			p.setX(p.getX() + p.getVelocityX()*time);
-			p.setY(p.getY() + p.getVelocityY()*time);
+			double new_x = p.getVelocityX()*time;
+			double new_y = p.getVelocityY()*time;
+			if(p.getCounter() == 0)
+				p.addTrajectory(new_x, new_y);
+			p.setX(p.getX() + new_x);
+			p.setY(p.getY() + new_y);
 		}
 		return;
 	}
