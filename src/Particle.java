@@ -9,10 +9,7 @@ public class Particle implements Comparable<Particle>{
     private double mass;
     private double vx;
     private double vy;
-    static int K = 0;
-
-	private Event lastE;
-    private Event newE;
+    static double trajectory;
     private int counter;
 
     public Particle(int id, double x, double y, double vx, double vy, double mass, double radius) {
@@ -23,9 +20,8 @@ public class Particle implements Comparable<Particle>{
         this.mass = mass;
         this.vx = vx;
         this.vy = vy;
-        this.newE = null;
-        this.lastE = null;
         this.counter = 0;
+        this.trajectory = 0;
     }
     
     public double yCollision(double height) {
@@ -82,7 +78,7 @@ public class Particle implements Comparable<Particle>{
         else {
         	double aux = -(deltaVR + Math.sqrt(dValue))/
                 (deltaVx*deltaVx + deltaVy*deltaVy); 
-            if (aux <= 0) {
+            if (aux < 0) {
             	return -1;
             }
             return aux;
@@ -112,7 +108,28 @@ public class Particle implements Comparable<Particle>{
         b.setVelocityY(b.getVelocityY() - jY/b.getMass());
 
     }
+
+    public double getXImpulse() {
+        return Math.abs(vx)*2*mass;
+    }
     
+    public double getYImpulse() {
+        return Math.abs(vy)*2*mass;
+    }
+
+    public double addTrajectory(double new_x, double new_y) {
+        trajectory += getDistance(x1, new_x, y1, new_y);
+    }
+
+    public double getTrajectory() {
+        return trajectory;
+    }
+
+
+    public double getDistance(double x1, double x2, double y1, double y2) {
+        return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+    }
+
     public int getId() {
         return id;
     }
@@ -141,28 +158,12 @@ public class Particle implements Comparable<Particle>{
         return mass;
     }
 
-    public Event getNewEvent() {
-        return newE;
-    }
-
-    public Event getLastEvent() {
-        return lastE;
-    }
-
     public int getCounter() {
         return counter;
     }
 
     public void addCollision() {
         counter++;
-    }
-
-    public void setNewEvent(Event newE) {
-        this.newE = newE;
-    }
-
-    public void setLastEvent(Event lastE) {
-        this.lastE = lastE;
     }
 
     public void setX(double x){

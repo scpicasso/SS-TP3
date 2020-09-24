@@ -28,14 +28,14 @@ public class CollisionSystem {
 		double tx = p.xCollision(length, height, gapSize);
 		double ty = p.yCollision(height);
 
-		if(tx > 0)
+		if(tx >= 0)
 			events.add(new Event(null, p, tx));
-		if(ty > 0)
+		if(ty >= 0)
 			events.add(new Event(p, null, ty));
 
 		for(Particle j : particles) {
 			double tc = p.timeToCollision(j);
-			if(tc > 0)
+			if(tc >= 0)
 				events.add(new Event(p, j, tc));
 		}
 		return;
