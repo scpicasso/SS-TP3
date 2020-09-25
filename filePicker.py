@@ -1,25 +1,29 @@
 import glob
 import re
+import shutil
+import os
 
-value = 0.02
-data_files = sorted(glob.glob("output.*.txt$"))
-print(data_files)
+data_files = sorted(glob.glob("output*.txt"))
 time = 0.0
 files = []
+i = 0
 
-while(value < 27.60):
-	min_diff = 1000000000
+while(time < 27.50):
+	diff = 1000000000
 	chosen = ""
 	for filename in data_files:
-		filenum = int(re.search("_([0-9]+).txt", filename).group(1))
-		print(filenum)
-    	if (min_diff > abs(filenum - value)):
-    		min_diff = abs(filenum - value)
-    		chosen = filename
-		
-	references[i] = chosen
-	i = i+1
+		filenum = float(re.search('\d+.\d+|\d+', filename).group(0))
+		value = abs(filenum - time)
+		if (diff > value):
+			diff = value
+			chosen = filename
+	files.append(chosen)
 	time = time + 0.02
+for f in files:
+	shutil.copy(f, "simulation")
+	old_name = "simulation/" + f
+	new_name = "simulation/output" + str(i)
+	os.rename(old_name,new_name)
+	i = i + 1
 
-filesshutil.copy(os.path.join(folders, filename), destination_folder)
 

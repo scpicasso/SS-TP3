@@ -64,7 +64,7 @@ try:
   try:
     gap_int = float(gap)
     generate_file('input.txt', part_int, 0.24, 0.09, gap_int, 1, 0.0015)
-    generate_solids_file(gap_int)
+    #generate_solids_file(gap_int)
   except ValueError:
     print("Invalid input")
 except ValueError:

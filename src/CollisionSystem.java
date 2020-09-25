@@ -79,16 +79,13 @@ public class CollisionSystem {
 		current_time = current_time + new_time;
 		if(a == null && b != null) {
 			b.bounceBackX();
-			//findEventsForParticle(b);
 		}
 		if(a != null && b == null) {
 			a.bounceBackY();
-			//findEventsForParticle(a);
 		}
 		if(a != null && b!= null) {
 			a.bounce(b);
-			//findEventsForParticle(a);
-			//findEventsForParticle(b);
+
 		}
 		events.clear(); 
 		findEventsForAllParticles();

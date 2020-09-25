@@ -30,42 +30,20 @@ public class MainApp {
 				
 		CollisionSystem cs = new CollisionSystem(particles, 0.24, 0.09, fp.getGap());
 		cs.findEventsForAllParticles();
-		
+		double frac_part = 0;
+
 		int flag_counter = 0;
 		while (flag_counter < 50) {
 			writeParticlesToFile(particles, particles.size(), cs.getTime());
 			cs.nextEvent();
-			double frac_part = calculateFractionParticle(particles, particles.size());
-			System.out.println(frac_part);
-			System.out.println("\n" + cs.getTime() + "\n\n");
-			if( frac_part < 0.6 && frac_part > 0.4 ) {
+			frac_part = calculateFractionParticle(particles, particles.size());
+			if( frac_part < 0.55 && frac_part > 0.45 ) {
 				flag_counter ++;
 			}
 			else {
 				flag_counter = 0;
 			}
-
 		}
-		
-		
-//		try (Writer writer3 = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("20001.txt"), "utf-8"))) {
-//		
-//			corte = false;
-//			step = 0;
-//			for (int k = 0; k < size; k++) {
-//				auxNodes[k] = nodes[k].clone();        
-//			}
-//			try (Writer writer1 = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("fpa4.txt"), "utf-8"))) {
-//			try (Writer writer2 = new BufferedWriter(new OutputStreamWriter( new FileOutputStream("fpb4.txt"), "utf-8"))) {
-//				for (int i = 0; i < 10000; i++) {
-//					writeParticleFractionFile(particles, auxNodes, size, writer1, writer2, writer3);
-//				    auxNodes = fluidSimulator.getFutureNodes(auxNodes, size);		
-//				}
-//			} 	
-//			}
-//
-//		
-//		}
 				
 	}
 	
@@ -84,10 +62,6 @@ public class MainApp {
 		return;			    	
 	}
 	
-	public static void writeParticleFractionFile(List<Particle> particles, short[][] nodes, int size, Writer w1, Writer w2, Writer w3) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-		
-
-	}
 	
 	public static double calculateFractionParticle(List<Particle> particles, int total_particles) {
 		int fp = 0;
@@ -98,22 +72,5 @@ public class MainApp {
 		}
 		return fp/(double)(total_particles);
 	}
-	
-    public static double calculateSD(double numArray[]) {
-        double sum = 0.0, standardDeviation = 0.0;
-        int length = numArray.length;
-
-        for(double num : numArray) {
-            sum += num;
-        }
-
-        double mean = sum/length;
-
-        for(double num: numArray) {
-            standardDeviation += Math.pow(num - mean, 2);
-        }
-
-        return Math.sqrt(standardDeviation/length);
-    }
 
 }
